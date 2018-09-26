@@ -1,0 +1,39 @@
+.posts-list{
+  background-color: #F6F6EF;
+  padding: 1em;
+}
+
+.post{
+  display: flex;
+  align-items: flex-start;
+  font-size: 13px;
+  margin-bottom: 1em;
+}
+
+.post-index{
+  color: gray;
+  padding-right: .5em;
+}
+
+.post-body{
+  padding: 0 .5em;
+}
+
+.post-title{
+  color: black;
+  text-decoration: none;
+  &:hover{
+    text-decoration: underline;
+  }
+}
+
+.post-details{
+  font-size: 10px;
+  padding: .3em 0 .5em;
+  color: gray;
+}
+
+.post-likes{
+  color: gray;
+  font-size: 9px;
+}
