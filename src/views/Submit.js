@@ -20,7 +20,7 @@ class Login extends Component {
     return (
       <form onSubmit={this.onFormSubmit}>
         <div className="form-group">
-          <label>Link: </label>
+          <label>url </label>
           <input type="text" ref="name" />
         </div>
         <button>SUBMIT</button>

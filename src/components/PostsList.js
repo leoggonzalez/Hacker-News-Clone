@@ -3,11 +3,32 @@ import Post from './Post';
 import './../assets/styles/PostsList.scss';
 
 class PostsList extends Component {
+  renderList(array) {
+    return array
+      .sort((a, b) => {
+        if (a.like_count < b.like_count) return 1;
+        if (a.like_count > b.like_count) return -1;
+        return 0;
+      })
+      .map((d, i) => <li key={i}><Post index={i} post={d} loggedUser={this.props.loggedUser} sessionId={ this.props.sessionId } /></li>);
+  }
+
   render() {
-    const listItems = this.props.posts.map((d, i) => <li key={i}><Post index={i} post={d} /></li>);
+    const days = this.props.posts.map((day, i) => {
+      return (
+        <div className="posts-day" key={i}>
+          <header className="posts-day__header">
+            { day.date.format("MMMM Do, YYYY") }
+          </header>
+          <ul className="posts-day__list">
+            { this.renderList(day.posts) }
+          </ul>
+        </div>
+      );
+    });
     return (
       <ul className="posts-list">
-        {listItems}
+        {days}
       </ul>
     );
   };

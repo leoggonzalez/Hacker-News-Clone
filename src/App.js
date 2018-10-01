@@ -16,9 +16,23 @@ class App extends Component {
     };
     this.logInUser = this.logInUser.bind(this);
     this.addNewPost = this.addNewPost.bind(this);
+    this.fetchPosts = this.fetchPosts.bind(this);
   }
-  async componentWillMount() {
-    const posts = await api.fetchPosts();
+  componentWillMount() {
+    this.fetchPosts();
+    // events
+    const source = new EventSource('https://likemachine-api.nerdgeschoss.de/links');
+    source.addEventListener('change', (e) => {
+      const data = JSON.parse(e.data);
+      debugger;
+      this.fetchPost(data);
+    }, false);
+  }
+  async fetchPost(post) {
+    debugger;
+  }
+  async fetchPosts(sessionId) {
+    const posts = await api.fetchPosts(sessionId);
     this.setState({
       posts,
     });
@@ -28,8 +42,10 @@ class App extends Component {
       const sessionId = await api.logIn(data);
       this.setState({
         sessionId,
+        posts: [],
         ...data,
       });
+      this.fetchPosts(sessionId);
     } catch (error) {
       console.log(error);
     }
@@ -43,7 +59,14 @@ class App extends Component {
         <div className="main">
           <div className="main-container">
             <Navbar loggedUser={this.state.loggedUser} />
-            <Route exact path="/" render={props => ( <Home posts={this.state.posts} /> )} />
+            { /* HOME */ }
+            <Route 
+              exact path="/"
+              render={props => ( <Home posts={this.state.posts}
+                loggedUser={this.state.loggedUser}
+                sessionId={this.state.sessionId} /> )}
+            />
+            { /* LOGIN */ }
             <Route exact path="/login" render={
               (props) => {
                 if (!this.state.loggedUser) {
@@ -57,6 +80,7 @@ class App extends Component {
                 }
               }
             } />
+            { /* SUBMIT */ }
             <Route exact path="/submit" render={
               (props) => {
                 if (this.state.loggedUser) {

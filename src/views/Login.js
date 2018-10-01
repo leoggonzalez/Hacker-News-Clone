@@ -21,6 +21,7 @@ class Login extends Component {
       <div>
         <FacebookLogin
           appId="2178804432377132"
+          autoLoad={true}
           fields="name,email,picture"
           callback={this.responseFacebook} />
       </div>
