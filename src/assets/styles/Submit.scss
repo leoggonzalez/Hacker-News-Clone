@@ -1,0 +1,36 @@
+.submit{
+  background-color: #F6F6EF;
+  padding: 1em;
+}
+
+.submit-header{
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+
+.form-label{
+  color: #828282;
+}
+
+.form-control{
+  width: 50%;
+}
+
+.submit-button{
+  font-family: monospace;
+  text-transform: lowercase;
+  margin-top: 1em;
+}
+
+.submit-submitted{
+  font-size: 14px;
+  text-align: center;
+  a{
+    background-color: #FF6600;
+    color: white;
+    margin-top: 1em;
+    padding: .5em 1em;
+    display: inline-block;
+    text-decoration: none;
+  }
+}

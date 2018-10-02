@@ -20,25 +20,13 @@ class Navbar extends Component {
             </NavLink>
           </li>
           <li className="hacker-news-link">
-            <NavLink to="/news" exact>Hacker News</NavLink>
+            <NavLink to="/" exact>Hacker News</NavLink>
           </li>
           <li className="navbar-link">
-            <NavLink to="/newest" exact>new</NavLink>
+            <NavLink to="/" exact>latest</NavLink>
           </li>
           <li className="navbar-link">
-            <NavLink to="/newcomments" exact>comments</NavLink>
-          </li>
-          <li className="navbar-link">
-            <NavLink to="/show" exact>show</NavLink>
-          </li>
-          <li className="navbar-link">
-            <NavLink to="/ask" exact>ask</NavLink>
-          </li>
-          <li className="navbar-link">
-            <NavLink to="/jobs" exact>jobs</NavLink>
-          </li>
-          <li className="navbar-link">
-            <NavLink to="/submit" exact>submit</NavLink>
+            <NavLink to="/submit" exact>submit new post</NavLink>
           </li>
         </ul>
         <div className="navbar-login">

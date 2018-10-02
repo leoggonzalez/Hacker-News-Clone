@@ -1,0 +1,32 @@
+.main{
+  padding: .5em;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.main-container{
+  max-width: 85vw;
+  margin: 0 auto;
+}
+
+.login {
+  padding: 1em;
+  background-color: #F6F6EF;
+}
+
+.loading-icon{
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.home-loading{
+  padding: 1em;
+  background-color: #F6F6EF;
+}

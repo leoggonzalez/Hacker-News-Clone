@@ -10,7 +10,17 @@ class PostsList extends Component {
         if (a.like_count > b.like_count) return -1;
         return 0;
       })
-      .map((d, i) => <li key={i}><Post index={i} post={d} loggedUser={this.props.loggedUser} sessionId={ this.props.sessionId } /></li>);
+      .map((d, i) => {
+        return (
+          <li key={i}>
+            <Post index={i} post={d}
+              loggedUser={this.props.loggedUser} 
+              sessionId={ this.props.sessionId }
+              onDelete={ this.props.onDelete } 
+            />
+          </li>
+        )
+      });
   }
 
   render() {

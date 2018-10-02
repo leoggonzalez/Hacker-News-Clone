@@ -13,7 +13,7 @@ export default {
       const sessionId = await resp.json();
       return sessionId;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   },
   async fetchPosts(sessionId) {
@@ -26,7 +26,20 @@ export default {
       const posts = await resp.json();
       return posts;
     } catch (error) {
-      return error;
+      throw error;
+    }
+  },
+  async fetchPost(post, sessionId) {
+    try {
+      const headers = new Headers();
+      if (sessionId) {
+        headers.append('Authorization', `Bearer ${sessionId.id}`);
+      }
+      const resp = await fetch(`https://likemachine-api.nerdgeschoss.de/links/${post.id}`, { headers });
+      const updatedPost = await resp.json();
+      return updatedPost;
+    } catch (error) {
+      throw error;
     }
   },
   async addNewPost(url, sessionId) {
@@ -37,18 +50,16 @@ export default {
       const auth = `Bearer ${sessionId.id}`;
       headers.append('Authorization', auth);
 
-      let resp = await fetch('https://likemachine-api.nerdgeschoss.de/links', {
+      await fetch('https://likemachine-api.nerdgeschoss.de/links', {
         method: 'POST',
         body: JSON.stringify({
           url,
         }),
         headers,
       });
-      const resp2 = await resp.json();
-      debugger;
-      return resp2;
+      return true;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   },
   async likePost(post, sessionId) {
@@ -61,8 +72,39 @@ export default {
         method: 'POST',
         headers,
       });
+      return true;
     } catch (error) {
-      console.log(error);
+      throw error;
+    }
+  },
+  async unlikePost(post, sessionId) {
+    try {
+      const headers = new Headers();
+      const auth = `Bearer ${sessionId.id}`;
+      headers.append('Authorization', auth);
+      
+      await fetch(`https://likemachine-api.nerdgeschoss.de/links/${post.id}/like`, {
+        method: 'DELETE',
+        headers,
+      });
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  },
+  async deletePost(post, sessionId) {
+    try {
+      const headers = new Headers();
+      const auth = `Bearer ${sessionId.id}`;
+      headers.append('Authorization', auth);
+
+      await fetch(`https://likemachine-api.nerdgeschoss.de/links/${post.id}`, {
+        method: 'DELETE',
+        headers,
+      });
+      return true;
+    } catch (error) {
+      throw error;
     }
   },
 };

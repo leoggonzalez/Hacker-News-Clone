@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import './App.scss';
+import './assets/styles/App.scss';
+import './assets/styles/animate.css';
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import Navbar from './components/Navbar';
 import Home from './views/Home';
@@ -12,10 +13,10 @@ class App extends Component {
     super(props);
     this.state = { 
       loggedUser: false,
+      loadFailed: false,
       posts: [],
     };
     this.logInUser = this.logInUser.bind(this);
-    this.addNewPost = this.addNewPost.bind(this);
     this.fetchPosts = this.fetchPosts.bind(this);
   }
   componentWillMount() {
@@ -24,18 +25,31 @@ class App extends Component {
     const source = new EventSource('https://likemachine-api.nerdgeschoss.de/links');
     source.addEventListener('change', (e) => {
       const data = JSON.parse(e.data);
-      debugger;
-      this.fetchPost(data);
+      this.fetchPost(data.link);
     }, false);
   }
   async fetchPost(post) {
-    debugger;
-  }
-  async fetchPosts(sessionId) {
-    const posts = await api.fetchPosts(sessionId);
+    const updatedPost = await api.fetchPost(post, this.state.sessionId);
+    const posts = [...this.state.posts];
+    for (let i = 0; i < posts.length; i += 1) {
+      if (posts[i].id === updatedPost.id) posts[i] = updatedPost;
+    }
     this.setState({
       posts,
     });
+  }
+  async fetchPosts() {
+    try {
+      const posts = await api.fetchPosts(this.state.sessionId);
+      this.setState({
+        posts,
+      });
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        loadFailed: true,
+      });
+    }
   }
   async logInUser(data) {
     try {
@@ -45,13 +59,13 @@ class App extends Component {
         posts: [],
         ...data,
       });
-      this.fetchPosts(sessionId);
+      this.fetchPosts();
     } catch (error) {
       console.log(error);
+      this.setState({
+        loadFailed: true,
+      });
     }
-  }
-  async addNewPost(data) {
-    await api.addNewPost(data.link, this.state.sessionId);
   }
   render() {
     return (
@@ -64,14 +78,16 @@ class App extends Component {
               exact path="/"
               render={props => ( <Home posts={this.state.posts}
                 loggedUser={this.state.loggedUser}
-                sessionId={this.state.sessionId} /> )}
+                sessionId={this.state.sessionId} 
+                loadFailed={this.state.loadFailed}
+                onDelete={this.fetchPosts} /> )}
             />
             { /* LOGIN */ }
             <Route exact path="/login" render={
               (props) => {
                 if (!this.state.loggedUser) {
                   return (    
-                    <Login onSubmit={this.logInUser} />
+                    <Login onSubmit={this.logInUser} loadFailed={this.state.loadFailed} />
                   )
                 } else {
                   return (
@@ -85,7 +101,7 @@ class App extends Component {
               (props) => {
                 if (this.state.loggedUser) {
                   return (
-                    <Submit onSubmit={this.addNewPost} />
+                    <Submit onSubmit={this.fetchPosts} sessionId={this.state.sessionId} />
                   )
                 } else {
                   return (

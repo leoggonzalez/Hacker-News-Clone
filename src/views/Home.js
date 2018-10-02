@@ -29,9 +29,17 @@ class Home extends Component {
         if (a.date.isAfter(b.date)) return -1;
         return 0;
       });
-      list = <PostsList posts={posts} loggedUser={this.props.loggedUser} sessionId={ this.props.sessionId }/>
+      list = (
+        <PostsList posts={posts}
+          loggedUser={this.props.loggedUser}
+          sessionId={ this.props.sessionId }
+          onDelete={this.props.onDelete}
+        />
+      )
+    } else if (this.props.loadFailed) {
+      list = <p className="home-loading">Failed to load. Press refresh the page.</p>
     } else {
-      list = <p>Loading...</p>
+      list = <p className="home-loading">Loading posts...</p>
     }
     return (
       <div className="news">

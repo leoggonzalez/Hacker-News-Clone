@@ -45,3 +45,23 @@
   color: gray;
   font-size: 9px;
 }
+
+.post-like{
+  cursor: pointer;
+  &__icon{
+    height: 1em;
+    width: 1em;
+  }
+}
+
+.post-delete{
+  strong{
+    cursor: pointer;
+    font-weight: bold;
+  }
+  &:hover{
+    strong {
+      text-decoration: underline;
+    }
+  }
+}
