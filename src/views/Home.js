@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';  
 import PostsList from './../components/PostsList';
 import moment from 'moment';
+
+const mapStateToProps = state => {
+  return { posts: state.posts }
+}
 
 function groupByDay(array) {
   const group = [];
@@ -19,7 +24,7 @@ function groupByDay(array) {
   return group;
 };
 
-class Home extends Component {
+class Home extends Component {  
   render() {
     let list;
     if (this.props.posts.length > 0) {
@@ -49,4 +54,4 @@ class Home extends Component {
   };
 };
 
-export default Home;
+export default connect(mapStateToProps)(Home);

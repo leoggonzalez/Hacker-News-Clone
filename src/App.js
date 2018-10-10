@@ -1,20 +1,30 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { connect } from 'react-redux';
+import { addPost, logInUser } from './store/actions/index';
 import './assets/styles/App.scss';
 import './assets/styles/animate.css';
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import Navbar from './components/Navbar';
 import Home from './views/Home';
 import Login from './views/Login';
 import Submit from './views/Submit';
 import api from './components/Api';
 
+const mapDispatchToProps = dispatch => {
+  return {
+    addPost: post => dispatch(addPost(post)),
+    logInUser: user => dispatch(logInUser(user)),
+  }
+}
+const mapStateToProps = state => {
+  return { posts: state.posts, loggedUser: state.loggedUser }
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = { 
-      loggedUser: false,
       loadFailed: false,
-      posts: [],
     };
     this.logInUser = this.logInUser.bind(this);
     this.fetchPosts = this.fetchPosts.bind(this);
@@ -30,7 +40,7 @@ class App extends Component {
   }
   async fetchPost(post) {
     const updatedPost = await api.fetchPost(post, this.state.sessionId);
-    const posts = [...this.state.posts];
+    const posts = [...this.props.posts];
     for (let i = 0; i < posts.length; i += 1) {
       if (posts[i].id === updatedPost.id) posts[i] = updatedPost;
     }
@@ -41,9 +51,9 @@ class App extends Component {
   async fetchPosts() {
     try {
       const posts = await api.fetchPosts(this.state.sessionId);
-      this.setState({
-        posts,
-      });
+      posts.forEach((post) => {
+        this.props.addPost(post);
+      })
     } catch (error) {
       console.log(error);
       this.setState({
@@ -59,6 +69,10 @@ class App extends Component {
         posts: [],
         ...data,
       });
+      this.props.logInUser({
+        sessionId,
+        ...data.loggedUser,
+      })
       this.fetchPosts();
     } catch (error) {
       console.log(error);
@@ -72,12 +86,12 @@ class App extends Component {
       <Router>
         <div className="main">
           <div className="main-container">
-            <Navbar loggedUser={this.state.loggedUser} />
+            <Navbar loggedUser={this.props.loggedUser} />
             { /* HOME */ }
             <Route 
               exact path="/"
-              render={props => ( <Home posts={this.state.posts}
-                loggedUser={this.state.loggedUser}
+              render={props => ( <Home
+                loggedUser={this.props.loggedUser}
                 sessionId={this.state.sessionId} 
                 loadFailed={this.state.loadFailed}
                 onDelete={this.fetchPosts} /> )}
@@ -85,7 +99,7 @@ class App extends Component {
             { /* LOGIN */ }
             <Route exact path="/login" render={
               (props) => {
-                if (!this.state.loggedUser) {
+                if (!this.props.loggedUser) {
                   return (    
                     <Login onSubmit={this.logInUser} loadFailed={this.state.loadFailed} />
                   )
@@ -99,7 +113,7 @@ class App extends Component {
             { /* SUBMIT */ }
             <Route exact path="/submit" render={
               (props) => {
-                if (this.state.loggedUser) {
+                if (this.props.loggedUser) {
                   return (
                     <Submit onSubmit={this.fetchPosts} sessionId={this.state.sessionId} />
                   )
@@ -117,4 +131,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
