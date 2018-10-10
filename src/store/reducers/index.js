@@ -3,6 +3,8 @@ import { ADD_POST, LOG_IN_USER } from './../constants/action-types';
 const initialState = {
   loggedUser: null,
   posts: [],
+  postsLoaded: false,
+  postsLoadedWithAuth: false,
 };
 
 const rootReducer = (state = initialState, action) => {

@@ -1,17 +1,14 @@
 export default {
-  async logIn(data) {
+  async logIn(facebook_token) {
     try {
       const resp = await fetch('https://likemachine-api.nerdgeschoss.de/session', {
         method: 'POST',
-        body: JSON.stringify({
-          facebook_token: data.loggedUser.accessToken,
-        }),
+        body: JSON.stringify({ facebook_token }),
         headers: {
           'Content-Type': 'application/json'
         },
       });
-      const sessionId = await resp.json();
-      return sessionId;
+      return await resp.json();
     } catch (error) {
       throw error;
     }

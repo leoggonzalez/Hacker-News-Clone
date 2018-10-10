@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import { NavLink } from "react-router-dom";
+import { connect } from 'react-redux';
 import logo from './../assets/y18.gif';
 import './../assets/styles/Navbar.scss';
 
+const mapStateToProps = state => {
+  return { loggedUser: state.loggedUser }
+}
+
 class Navbar extends Component {
   render() {
-    let loggedIn;
-    if (this.props.loggedUser) {
-      loggedIn = <NavLink to="/" exact>{ this.props.loggedUser.name }</NavLink>
-    } else {
-      loggedIn = <NavLink to="/login" exact>login</NavLink>
-    }
+    const { loggedUser} = this.props;
+
     return (
       <nav className="navbar">
         <ul className="navbar-links">
@@ -30,11 +31,14 @@ class Navbar extends Component {
           </li>
         </ul>
         <div className="navbar-login">
-          { loggedIn }
+          { loggedUser ?  
+            <NavLink to="/" exact>{loggedUser.name}</NavLink>
+            : <NavLink to="/login" exact>login</NavLink>
+          }
         </div>
       </nav>
     );
   }
 }
 
-export default Navbar;
+export default connect(mapStateToProps)(Navbar);

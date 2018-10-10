@@ -1,19 +1,31 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import FacebookLogin from 'react-facebook-login';
+import api from './../components/Api';
+import { logInUser } from './../store/actions/index';
+
+const mapDispatchToProps = dispatch => {
+  return {
+    logInUser: user => dispatch(logInUser(user)),
+  }
+}
 
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = { isToggleOn: true };
-
-    // This binding is necessary to make `this` work in the callback
-    this.responseFacebook = this.responseFacebook.bind(this);
+    this.logInUser = this.logInUser.bind(this);
   }
 
-  responseFacebook(response) {
-    this.props.onSubmit({
-      loggedUser: response,
-    })
+  async logInUser(data) {
+    try {
+      const sessionId = await api.logIn(data.accessToken);
+      this.props.logInUser({
+        sessionId,
+        ...data,
+      })
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   render() {
@@ -26,7 +38,7 @@ class Login extends Component {
           appId="2178804432377132"
           autoLoad={true}
           fields="name,email,picture"
-          callback={this.responseFacebook} />
+          callback={this.logInUser} />
       )
     }
     return (
@@ -37,4 +49,4 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default connect(null, mapDispatchToProps)(Login);
